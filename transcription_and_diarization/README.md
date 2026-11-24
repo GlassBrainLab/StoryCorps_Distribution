@@ -5,9 +5,9 @@ pipeline is made up of the primary script called `transcribe_diarize_with_timest
 and is followed by two post-processing scripts: `convert_wordlevel_speaker_to_utterance.py` and 
 `make_transcripts_match.py`.
 
-# Installation
+## Installation
 
-## 1. Create a Python environment
+### 1. Create a Python environment
 
 We recommend [miniforge](https://github.com/conda-forge/miniforge) (which provides the `mamba`
 command) to create an isolated environment. The commands below use `mamba`, but `conda` is
@@ -26,7 +26,7 @@ mamba create -n gbl_xscription_pipeline python=3.11.18
 mamba activate gbl_xscription_pipeline
 ```
 
-## 2. Install packages
+### 2. Install packages
 
 Install WhisperX and its dependencies:
 
@@ -50,7 +50,7 @@ These pins are necessary because newer versions of these packages have breaking 
 that are incompatible with one another. The second `pip install` will downgrade some packages
 that were pulled in by the first step.
 
-## 3. Hugging Face token
+### 3. Hugging Face token
 
 The speaker diarization step requires a Hugging Face account and access token:
 
@@ -61,13 +61,55 @@ The speaker diarization step requires a Hugging Face account and access token:
    on the model page — this is required even with a valid token
 4. Pass your token at runtime with `--hf_token YOUR_TOKEN`
 
-# Preprocessing
+## Preprocessing
 
-## Audio Deduplication
+### Audio Deduplication
+
+A. Identifying Duplicated Audio
 
 TODO: Ardyn to fill in
 
-# Transcription and Diarization
+B. Trimming Duplicated Audio
+
+Once files with repeated audio have been identified (Part A), trimming is a two-step process
+using the scripts in the `audio_deduplication/` folder.
+
+First, `make_deduplication_run_table.py` builds the run table that will be used in the actual 
+trimming process: it collects all audio file names from your audio directory, filters to include 
+only the files identified for de-duplication, and saves a run table in CSV format for tracking 
+processing status across batches.
+
+NOTE: this first step also ended up including a bonus functionality of standardizing the de-
+duplicated audio file names. We similarly standardized all other file names that were not a 
+part of the deduplication effort, separately.
+
+```bash
+python make_deduplication_run_table.py \
+    --parent_dir /path/to/audio \
+    --targets_file /path/to/files_to_deduplicate.csv \
+    --all_audio_file /path/to/all_audio_inventory.csv
+```
+
+Then, `audio_deduplication.py` does the actual trimming: for each targeted file it removes the
+repeated portion by retaining only the last N minutes of audio (where N is the non-duplicate
+duration identified in Part A), and overwrites the original file in-place. The script is designed
+to run in parallel batches and uses file locking to safely share the run table across jobs.
+
+NOTE: this file was actually called by a python orchestrator script that was written to work with 
+our Slurm service on the UVM cluster. As this orchestrator was specific to our systems, it is not 
+included here.
+
+```bash
+python audio_deduplication.py \
+    --targets_file /path/to/batch1_targets.csv \
+    --run_table /path/to/deduplication_run_table.csv \
+    --batch_id 1 \
+    --group YourGroupName
+```
+
+See the docstrings at the top of each script for full argument details.
+
+## Transcription and Diarization
 
 To run `transcribe_diarize_with_timestamps_whisperx.py` on a single file, make sure your 
 environment has been activated and then run:
@@ -83,6 +125,6 @@ python transcribe_diarize_with_timestamps_whisperx.py \
 More examples showing the different ways to run this script, along with explanations of the run 
 arguments, can be found in the docstring at the top of the file.
 
-# Post-processing
+## Post-processing
 
 TODO: Ardyn to fill in
