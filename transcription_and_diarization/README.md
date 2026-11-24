@@ -65,11 +65,11 @@ The speaker diarization step requires a Hugging Face account and access token:
 
 ### Audio Deduplication
 
-A. Identifying Duplicated Audio
+**A. Identifying Duplicated Audio**
 
 TODO: Ardyn to fill in
 
-B. Trimming Duplicated Audio
+**B. Trimming Duplicated Audio**
 
 Once files with repeated audio have been identified (Part A), trimming is a two-step process
 using the scripts in the `audio_deduplication/` folder.
@@ -79,7 +79,7 @@ trimming process: it collects all audio file names from your audio directory, fi
 only the files identified for de-duplication, and saves a run table in CSV format for tracking 
 processing status across batches.
 
-NOTE: this first step also ended up including a bonus functionality of standardizing the de-
+**NOTE:** this first step also ended up including a bonus functionality of standardizing the de-
 duplicated audio file names. We similarly standardized all other file names that were not a 
 part of the deduplication effort, separately.
 
@@ -95,8 +95,8 @@ repeated portion by retaining only the last N minutes of audio (where N is the n
 duration identified in Part A), and overwrites the original file in-place. The script is designed
 to run in parallel batches and uses file locking to safely share the run table across jobs.
 
-NOTE: this file was actually called by a python orchestrator script that was written to work with 
-our Slurm service on the UVM cluster. As this orchestrator was specific to our systems, it is not 
+**NOTE:** this file was actually called by a python orchestrator script that was written to work with
+our Slurm service on the UVM cluster. As this orchestrator is specific to our systems, it is not 
 included here.
 
 ```bash
