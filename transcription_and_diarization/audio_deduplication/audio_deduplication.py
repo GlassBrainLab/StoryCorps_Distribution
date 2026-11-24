@@ -39,7 +39,7 @@ audio files for deduplication and so this in-place trimming is as-designed.
 
 ~~~ Attribution ~~~
 
-Author: kirsten.bonson@uvm.edu
+Authors: ardyn.olszko and kirsten.bonson@uvm.edu
 """
 import os
 import csv
