@@ -1,9 +1,9 @@
 # GBL Transcription and Diarization Pipeline
 
 This README is for the Glass Brain Lab transcription and diarization pipeline, in particular. This 
-pipeline is made up of the primary script called transcribe_diarize_with_timestamps_whisperx.py 
-and is followed by two post-processing scripts: convert_wordlevel_speaker_to_utterance.py and 
-make_transcripts_match.py.
+pipeline is made up of the primary script called `transcribe_diarize_with_timestamps_whisperx.py` 
+and is followed by two post-processing scripts: `convert_wordlevel_speaker_to_utterance.py` and 
+`make_transcripts_match.py`.
 
 # Installation
 
@@ -61,7 +61,13 @@ The speaker diarization step requires a Hugging Face account and access token:
    on the model page — this is required even with a valid token
 4. Pass your token at runtime with `--hf_token YOUR_TOKEN`
 
-# Use
+# Preprocessing
+
+## Audio Deduplication
+
+TODO: Ardyn to fill in
+
+# Transcription and Diarization
 
 To run `transcribe_diarize_with_timestamps_whisperx.py` on a single file, make sure your 
 environment has been activated and then run:
